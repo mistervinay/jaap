@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mantra Jaap Counter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 10px;
+      color: #444;
+    }
+
+    #count {
+      font-size: 4em;
+      color: #2e7d32;
+      margin: 20px 0;
+    }
+
+    button {
+      background: #2e7d32;
+      color: white;
+      font-size: 1.2em;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      margin: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1b5e20;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5em; }
+      #count { font-size: 3em; }
+      button { font-size: 1em; padding: 12px 25px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🕉 Om Namah Shivaya 🕉</h1>
+    <div id="count">0</div>
+    <button onclick="incrementCount()">Jaap</button>
+    <button onclick="resetCount()">Reset</button>
+  </div>
+
+  <script>
+    let count = 0;
+
+    function incrementCount() {
+      count++;
+      document.getElementById('count').innerText = count;
+      // Optional: Add vibration on mobile
+      if (navigator.vibrate) navigator.vibrate(50);
+    }
+
+    function resetCount() {
+      if (confirm("Reset counter to 0?")) {
+        count = 0;
+        document.getElementById('count').innerText = count;
+      }
+    }
+  </script>
+</body>
+</html>
