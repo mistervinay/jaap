@@ -276,7 +276,9 @@ const bodyContent = document.getElementById('bodyContent');
       if (navigator.vibrate) navigator.vibrate(50);
     });
 
-bodyContent.addEventListener('click', () => {
+    bodyContent.addEventListener('click', () => {
+      const ignoredTags = ['INPUT', 'BUTTON', 'LABEL','p'];
+      if (ignoredTags.includes(e.target.tagName)) return;
       count++;
       countDisplay.textContent = count;
       saveState();
@@ -289,6 +291,7 @@ bodyContent.addEventListener('click', () => {
         count = 0;
         countDisplay.textContent = count;
         saveState();
+        if (navigator.vibrate) navigator.vibrate(50);
       }
     });
   </script>
