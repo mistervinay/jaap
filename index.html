@@ -176,7 +176,7 @@
     }
   </style>
 </head>
-<body>
+<body id="bodyContent">
   <div class="container" role="main" aria-label="Mantra Jaap Counter">
     <div class="mandala" aria-hidden="true"></div>
     <h1>🕉 Om Namah Shivaya 🕉</h1>
@@ -219,6 +219,7 @@
     const countDisplay = document.getElementById('count');
     const incrementBtn = document.getElementById('incrementBtn');
     const resetBtn = document.getElementById('resetBtn');
+const bodyContent = document.getElementById('bodyContent');
 
     // State
     let count = 0;
@@ -269,6 +270,13 @@
 
     // Increment count
     incrementBtn.addEventListener('click', () => {
+      count++;
+      countDisplay.textContent = count;
+      saveState();
+      if (navigator.vibrate) navigator.vibrate(50);
+    });
+
+bodyContent.addEventListener('click', () => {
       count++;
       countDisplay.textContent = count;
       saveState();
