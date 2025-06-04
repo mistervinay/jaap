@@ -276,7 +276,7 @@ const bodyContent = document.getElementById('bodyContent');
       if (navigator.vibrate) navigator.vibrate(50);
     });
 
-    bodyContent.addEventListener('click', () => {
+    bodyContent.addEventListener('click', (e) => {
       const ignoredTags = ['INPUT', 'BUTTON', 'LABEL','p'];
       if (ignoredTags.includes(e.target.tagName)) return;
       count++;
