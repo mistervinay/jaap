@@ -8,15 +8,13 @@
     @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
 
-    /* Reset and base */
     * {
       box-sizing: border-box;
     }
     body {
       margin: 0;
       font-family: 'Merriweather', serif;
-      background: 
-        radial-gradient(circle at center, #fff8e1, #ffcc80 80%);
+      background: radial-gradient(circle at center, #fff8e1, #ffcc80 80%);
       height: 100vh;
       display: flex;
       justify-content: center;
@@ -27,7 +25,6 @@
       overflow: hidden;
     }
 
-    /* Subtle textured pattern using SVG as background */
     body::before {
       content: "";
       position: fixed;
@@ -49,10 +46,8 @@
       text-align: center;
       z-index: 1;
       border: 3px solid #f57c00;
-      box-sizing: border-box;
     }
 
-    /* Mandala style subtle decoration using CSS */
     .mandala {
       position: absolute;
       top: -60px;
@@ -74,7 +69,6 @@
       margin: 0 0 15px 0;
       color: #bf360c;
       text-shadow: 1px 1px 3px #f9a825;
-      user-select: none;
     }
 
     label {
@@ -84,7 +78,6 @@
       margin-bottom: 8px;
       display: block;
       text-align: left;
-      user-select: none;
     }
 
     input[type="text"] {
@@ -98,6 +91,7 @@
       transition: border-color 0.3s, box-shadow 0.3s;
       box-shadow: inset 0 2px 5px rgba(255, 152, 0, 0.2);
     }
+
     input[type="text"]:focus {
       border-color: #bf360c;
       box-shadow: 0 0 8px 2px rgba(255, 111, 0, 0.6);
@@ -110,7 +104,18 @@
       margin: 15px 0 5px 0;
       min-height: 1.5em;
       font-style: italic;
-      user-select: none;
+    }
+
+    #editBtn {
+      margin-top: 10px;
+      display: none;
+      background: none;
+      color: #d84315;
+      border: none;
+      font-size: 1rem;
+      text-decoration: underline;
+      cursor: pointer;
+      font-family: 'Roboto Slab', serif;
     }
 
     #count {
@@ -119,7 +124,6 @@
       color: #d84315;
       margin: 25px 0 10px 0;
       text-shadow: 1px 1px 2px #ffb74d;
-      user-select: none;
       letter-spacing: 3px;
     }
 
@@ -143,14 +147,15 @@
       cursor: pointer;
       box-shadow: 0 6px 10px rgba(230, 81, 0, 0.5);
       transition: background 0.3s, transform 0.15s, box-shadow 0.3s;
-      user-select: none;
       letter-spacing: 1px;
     }
+
     button:hover:not(:disabled) {
       background: linear-gradient(135deg, #e65100, #bf360c);
       box-shadow: 0 8px 15px rgba(183, 54, 12, 0.7);
       transform: translateY(-3px);
     }
+
     button:disabled {
       background: #ffcc80;
       cursor: not-allowed;
@@ -158,7 +163,6 @@
       color: #b57c00;
     }
 
-    /* Responsive */
     @media (max-width: 480px) {
       .container {
         padding: 30px 25px 40px;
@@ -180,18 +184,18 @@
   <div class="container" role="main" aria-label="Mantra Jaap Counter">
     <div class="mandala" aria-hidden="true"></div>
     <h1>🕉 Om Namah Shivaya 🕉</h1>
-    
+
     <label for="jaapInput">Enter type of Jaap:</label>
     <input
       id="jaapInput"
       type="text"
       placeholder="e.g., Om Namah Shivaya"
-      aria-describedby="jaapTypeDisplay"
       autocomplete="off"
       autocapitalize="words"
     />
 
     <div id="jaapTypeDisplay" aria-live="polite" aria-atomic="true"></div>
+    <button id="editBtn">Edit</button>
 
     <div id="count" aria-live="polite" aria-atomic="true">0</div>
 
@@ -202,9 +206,8 @@
   </div>
 
   <script>
-    // Cookie utility functions
     function setCookie(name, value, days) {
-      const expires = new Date(Date.now() + days*24*60*60*1000).toUTCString();
+      const expires = new Date(Date.now() + days * 86400000).toUTCString();
       document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
     }
 
@@ -213,19 +216,17 @@
       return match ? decodeURIComponent(match[2]) : null;
     }
 
-    // DOM elements
     const jaapInput = document.getElementById('jaapInput');
     const jaapTypeDisplay = document.getElementById('jaapTypeDisplay');
     const countDisplay = document.getElementById('count');
     const incrementBtn = document.getElementById('incrementBtn');
     const resetBtn = document.getElementById('resetBtn');
-const bodyContent = document.getElementById('bodyContent');
+    const bodyContent = document.getElementById('bodyContent');
+    const editBtn = document.getElementById('editBtn');
 
-    // State
     let count = 0;
     let jaapType = '';
 
-    // Load from cookies on page load
     window.onload = () => {
       const savedJaap = getCookie('jaapType');
       const savedCount = getCookie('jaapCount');
@@ -236,6 +237,9 @@ const bodyContent = document.getElementById('bodyContent');
         jaapTypeDisplay.textContent = `Current Jaap: "${jaapType}"`;
         incrementBtn.disabled = false;
         resetBtn.disabled = false;
+
+        jaapInput.style.display = 'none';
+        editBtn.style.display = 'inline-block';
       }
 
       if (savedCount && !isNaN(savedCount)) {
@@ -244,13 +248,11 @@ const bodyContent = document.getElementById('bodyContent');
       }
     };
 
-    // Save state to cookies
     function saveState() {
       setCookie('jaapType', jaapType, 30);
       setCookie('jaapCount', count, 30);
     }
 
-    // Update Jaap type on input change
     jaapInput.addEventListener('input', (e) => {
       jaapType = e.target.value.trim();
       if (jaapType.length > 0) {
@@ -258,6 +260,9 @@ const bodyContent = document.getElementById('bodyContent');
         incrementBtn.disabled = false;
         resetBtn.disabled = false;
         saveState();
+
+        jaapInput.style.display = 'none';
+        editBtn.style.display = 'inline-block';
       } else {
         jaapTypeDisplay.textContent = '';
         incrementBtn.disabled = true;
@@ -268,7 +273,12 @@ const bodyContent = document.getElementById('bodyContent');
       }
     });
 
-    // Increment count
+    editBtn.addEventListener('click', () => {
+      jaapInput.style.display = 'block';
+      jaapInput.focus();
+      editBtn.style.display = 'none';
+    });
+
     incrementBtn.addEventListener('click', () => {
       count++;
       countDisplay.textContent = count;
@@ -277,15 +287,16 @@ const bodyContent = document.getElementById('bodyContent');
     });
 
     bodyContent.addEventListener('click', (e) => {
-      const ignoredTags = ['INPUT', 'BUTTON', 'LABEL','p'];
+      const ignoredTags = ['INPUT', 'BUTTON', 'LABEL', 'P'];
       if (ignoredTags.includes(e.target.tagName)) return;
-      count++;
-      countDisplay.textContent = count;
-      saveState();
-      if (navigator.vibrate) navigator.vibrate(50);
+      if (jaapType) {
+        count++;
+        countDisplay.textContent = count;
+        saveState();
+        if (navigator.vibrate) navigator.vibrate(50);
+      }
     });
 
-    // Reset count
     resetBtn.addEventListener('click', () => {
       if (confirm("Reset counter to 0?")) {
         count = 0;
