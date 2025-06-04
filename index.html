@@ -2,87 +2,287 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mantra Jaap Counter</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap');
+
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f5f5f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      font-family: 'Merriweather', serif;
+      background: 
+        radial-gradient(circle at center, #fff8e1, #ffcc80 80%);
       height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #4b2e05;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    /* Subtle textured pattern using SVG as background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffcc80" fill-opacity="0.07" height="100" width="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40"/></svg>');
+      background-repeat: repeat;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .container {
+      position: relative;
+      background: #fff3e0;
+      border-radius: 25px;
+      padding: 45px 35px 55px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 12px 30px rgba(184, 115, 51, 0.3);
       text-align: center;
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      z-index: 1;
+      border: 3px solid #f57c00;
+      box-sizing: border-box;
+    }
+
+    /* Mandala style subtle decoration using CSS */
+    .mandala {
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, #f57c00 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(15px);
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
     }
 
     h1 {
-      font-size: 1.8em;
-      margin-bottom: 10px;
-      color: #444;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      margin: 0 0 15px 0;
+      color: #bf360c;
+      text-shadow: 1px 1px 3px #f9a825;
+      user-select: none;
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #bf360c;
+      margin-bottom: 8px;
+      display: block;
+      text-align: left;
+      user-select: none;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 18px;
+      font-size: 1rem;
+      border-radius: 15px;
+      border: 2px solid #f57c00;
+      outline: none;
+      font-family: 'Merriweather', serif;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      box-shadow: inset 0 2px 5px rgba(255, 152, 0, 0.2);
+    }
+    input[type="text"]:focus {
+      border-color: #bf360c;
+      box-shadow: 0 0 8px 2px rgba(255, 111, 0, 0.6);
+    }
+
+    #jaapTypeDisplay {
+      font-size: 1.2rem;
+      color: #bf360c;
+      font-weight: 600;
+      margin: 15px 0 5px 0;
+      min-height: 1.5em;
+      font-style: italic;
+      user-select: none;
     }
 
     #count {
-      font-size: 4em;
-      color: #2e7d32;
-      margin: 20px 0;
+      font-size: 5rem;
+      font-weight: 700;
+      color: #d84315;
+      margin: 25px 0 10px 0;
+      text-shadow: 1px 1px 2px #ffb74d;
+      user-select: none;
+      letter-spacing: 3px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-top: 15px;
     }
 
     button {
-      background: #2e7d32;
-      color: white;
-      font-size: 1.2em;
-      padding: 15px 30px;
+      flex: 1;
+      background: linear-gradient(135deg, #fb8c00, #e65100);
       border: none;
-      border-radius: 10px;
-      margin: 10px;
+      color: white;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      padding: 15px 0;
+      border-radius: 18px;
       cursor: pointer;
-      transition: background 0.3s;
+      box-shadow: 0 6px 10px rgba(230, 81, 0, 0.5);
+      transition: background 0.3s, transform 0.15s, box-shadow 0.3s;
+      user-select: none;
+      letter-spacing: 1px;
+    }
+    button:hover:not(:disabled) {
+      background: linear-gradient(135deg, #e65100, #bf360c);
+      box-shadow: 0 8px 15px rgba(183, 54, 12, 0.7);
+      transform: translateY(-3px);
+    }
+    button:disabled {
+      background: #ffcc80;
+      cursor: not-allowed;
+      box-shadow: none;
+      color: #b57c00;
     }
 
-    button:hover {
-      background: #1b5e20;
-    }
-
-    @media (max-width: 600px) {
-      h1 { font-size: 1.5em; }
-      #count { font-size: 3em; }
-      button { font-size: 1em; padding: 12px 25px; }
+    /* Responsive */
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 25px 40px;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      #count {
+        font-size: 4rem;
+      }
+      button {
+        font-size: 1.1rem;
+        padding: 12px 0;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" role="main" aria-label="Mantra Jaap Counter">
+    <div class="mandala" aria-hidden="true"></div>
     <h1>🕉 Om Namah Shivaya 🕉</h1>
-    <div id="count">0</div>
-    <button onclick="incrementCount()">Jaap</button>
-    <button onclick="resetCount()">Reset</button>
+    
+    <label for="jaapInput">Enter type of Jaap:</label>
+    <input
+      id="jaapInput"
+      type="text"
+      placeholder="e.g., Om Namah Shivaya"
+      aria-describedby="jaapTypeDisplay"
+      autocomplete="off"
+      autocapitalize="words"
+    />
+
+    <div id="jaapTypeDisplay" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="count" aria-live="polite" aria-atomic="true">0</div>
+
+    <div class="buttons">
+      <button id="incrementBtn" disabled>Jaap</button>
+      <button id="resetBtn" disabled>Reset</button>
+    </div>
   </div>
 
   <script>
-    let count = 0;
-
-    function incrementCount() {
-      count++;
-      document.getElementById('count').innerText = count;
-      // Optional: Add vibration on mobile
-      if (navigator.vibrate) navigator.vibrate(50);
+    // Cookie utility functions
+    function setCookie(name, value, days) {
+      const expires = new Date(Date.now() + days*24*60*60*1000).toUTCString();
+      document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
     }
 
-    function resetCount() {
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? decodeURIComponent(match[2]) : null;
+    }
+
+    // DOM elements
+    const jaapInput = document.getElementById('jaapInput');
+    const jaapTypeDisplay = document.getElementById('jaapTypeDisplay');
+    const countDisplay = document.getElementById('count');
+    const incrementBtn = document.getElementById('incrementBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // State
+    let count = 0;
+    let jaapType = '';
+
+    // Load from cookies on page load
+    window.onload = () => {
+      const savedJaap = getCookie('jaapType');
+      const savedCount = getCookie('jaapCount');
+
+      if (savedJaap) {
+        jaapType = savedJaap;
+        jaapInput.value = jaapType;
+        jaapTypeDisplay.textContent = `Current Jaap: "${jaapType}"`;
+        incrementBtn.disabled = false;
+        resetBtn.disabled = false;
+      }
+
+      if (savedCount && !isNaN(savedCount)) {
+        count = Number(savedCount);
+        countDisplay.textContent = count;
+      }
+    };
+
+    // Save state to cookies
+    function saveState() {
+      setCookie('jaapType', jaapType, 30);
+      setCookie('jaapCount', count, 30);
+    }
+
+    // Update Jaap type on input change
+    jaapInput.addEventListener('input', (e) => {
+      jaapType = e.target.value.trim();
+      if (jaapType.length > 0) {
+        jaapTypeDisplay.textContent = `Current Jaap: "${jaapType}"`;
+        incrementBtn.disabled = false;
+        resetBtn.disabled = false;
+        saveState();
+      } else {
+        jaapTypeDisplay.textContent = '';
+        incrementBtn.disabled = true;
+        resetBtn.disabled = true;
+        count = 0;
+        countDisplay.textContent = count;
+        saveState();
+      }
+    });
+
+    // Increment count
+    incrementBtn.addEventListener('click', () => {
+      count++;
+      countDisplay.textContent = count;
+      saveState();
+      if (navigator.vibrate) navigator.vibrate(50);
+    });
+
+    // Reset count
+    resetBtn.addEventListener('click', () => {
       if (confirm("Reset counter to 0?")) {
         count = 0;
-        document.getElementById('count').innerText = count;
+        countDisplay.textContent = count;
+        saveState();
       }
-    }
+    });
   </script>
 </body>
 </html>
