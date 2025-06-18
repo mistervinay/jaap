@@ -1,437 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily 🕉️Jaap🕉️ Tracker</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Jaap Tracker</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕉️</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom, #1a0024, #000);
-      color: #ffd700;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    -webkit-user-select: none;  /* Chrome all / Safari all */
-    -moz-user-select: none;     /* Firefox all */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Likely future */  
-    }
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom, #1a0024, #000);
+            color: #ffd700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-user-select: none;
+            /* Chrome all / Safari all */
+            -moz-user-select: none;
+            /* Firefox all */
+            -ms-user-select: none;
+            /* IE 10+ */
+            user-select: none;
+            /* Likely future */
+        }
 
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('https://cdn.pixabay.com/photo/2017/10/24/15/38/diwali-2881238_1280.jpg');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center;
-      opacity: 0.05;
-      z-index: 0;
-    }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/images/bg.webp');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.25;
+            z-index: 0;
+        }
 
-    .app-container {
-      background-color: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(15px);
-      width: 100%;
-      max-width: 420px;
-      height: 90vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-      z-index: 1;
-    }
+        .app-container {
+            background-color: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 420px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
 
-    .tab-bar {
-      display: flex;
-      width: 100%;
-      background-color: rgba(255, 255, 255, 0.07);
-      border-radius: 20px 20px 0 0;
-    }
+        .tab-bar {
+            display: flex;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.07);
+            border-radius: 20px 20px 0 0;
+        }
 
-    .tab {
-      flex: 1;
-      text-align: center;
-      padding: 15px 0;
-      cursor: pointer;
-      font-weight: 600;
-      color: #ffd700;
-      background: transparent;
-      font-size: 1rem;
-      transition: background-color 0.3s ease;
-    }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            cursor: pointer;
+            color: #c8c8c8;
+            font-weight: 600;
+            background: transparent;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
 
-    .tab.active {
-      background-color: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-      box-shadow: inset 0 -2px 0 #ffd700;
-    }
+        .tab.active {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #ffd700;
+            box-shadow: inset 0 -2px 0 #ffd700;
+        }
 
-    .tab:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
+        .tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-    .tab-content {
-      flex: 1;
-      padding: 20px;
-    }
+        .tab-content {
+            flex: 1;
+            padding: 20px;
+        }
 
-    .tab-history {
-      overflow-y: auto;
-    }
+        .tab-history {
+            overflow-y: auto;
+        }
 
-    .hidden {
-      display: none;
-    }
+        .hidden {
+            display: none;
+        }
 
-    #counter {
-      font-size: 2rem;
-      font-weight: 700;
-      text-align: center;
-      margin: 40px 0;
-      color: #ffd700;
-      text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
-    }
+        #counter {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 40px 0;
+            color: #ffd700;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+        }
 
-    #lastUpdated {
-      text-align: center;
-      color: #aaa;
-      font-size: 0.8rem;
-      margin-top: -30px;
-      margin-bottom: 30px;
-    }
+        #lastUpdated {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.8rem;
+            margin-top: -30px;
+            margin-bottom: 30px;
+        }
 
-    #historyList {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
-    }
+        #historyList {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
 
-    #historyList li {
-      padding: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 0.95rem;
-    }
+        #historyList li {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.95rem;
+        }
 
-    .no-history {
-      text-align: center;
-      color: #aaa;
-      font-style: italic;
-      margin-top: 20px;
-    }
+        .no-history {
+            text-align: center;
+            color: #aaa;
+            font-style: italic;
+            margin-top: 20px;
+        }
 
-    canvas {
-      width: 100% !important;
-      max-height: 250px;
-    }
+        canvas {
+            width: 100% !important;
+            max-height: 250px;
+        }
 
-    button {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      font-size: 2rem;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      background: radial-gradient(circle, #ffcc00, #ff9900);
-      color: #000;
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
-      transition: transform 0.2s ease-in-out;
-    }
+        button {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-size: 2rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            background: radial-gradient(circle, #ffcc00, #ff9900);
+            color: #000;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+            transition: transform 0.2s ease-in-out;
+            position: relative;
+        }
 
-    button:hover {
-      transform: scale(1.05);
-    }
+        button:hover {
+            transform: scale(1.05);
+        }
 
-    #resetBtn {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      font-size: 1.3rem;
-      background: #cc0000;
-      color: white;
-      box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
-    }
+        #resetBtn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            font-size: 1.3rem;
+            background: #cc0000;
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+        }
 
-    .secondary {
-      background-color: #555;
-      color: #fff;
-      padding: 8px 16px;
-      margin: 20px auto;
-      display: block;
-      font-size: 0.8rem;
-      border-radius: 10px;
-    }
+        .secondary {
+            width: auto;
+            height: auto;
+            background: #555;
+            color: #cacaca;
+            padding: 8px 16px;
+            margin: 20px auto;
+            display: block;
+            font-size: 0.9rem;
+            font-weight: normal;
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgb(57 57 57 / 75%);
+        }
 
-    .secondary:hover {
-      background-color: #666;
-    }
+        .secondary:hover {
+            background-color: #666;
+        }
 
-    /* Ripple */
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      transform: scale(0);
-      animation: ripple-animation 0.6s linear;
-      background-color: rgba(0, 122, 204, 0.3);
-      pointer-events: none;
-    }
+        /* Ripple */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            background-color: rgba(0, 122, 204, 0.3);
+            pointer-events: none;
+        }
 
-    @keyframes ripple-animation {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .app-container {
-        border-radius: 0;
-        height: 100vh;
-      }
-
-      button {
-        width: 70px;
-        height: 70px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
-  <div class="app-container">
-    <div class="tab-bar">
-      <div class="tab active" id="clickTab">🕉️Jaap🕉️</div>
-      <div class="tab" id="historyTab">🕉️History</div>
-    </div>
-
-    <div class="tab-content" id="clickContent">
-      <div id="counter">Today's Count: 0</div>
-      <div id="lastUpdated">Last updated: Today</div>
-      <div style="text-align:center;">
-        <button id="clickBtn">🕉️</button>
-      </div>
-    </div>
-
-    <div class="tab-content tab-history hidden" id="historyContent">
-      <canvas id="clickChart"></canvas>
-      <ul id="historyList"></ul>
-      <button id="clearHistoryBtn" class="secondary">Clear History</button>
-    </div>
-
-    <button id="resetBtn" title="Reset today">↺</button>
-  </div>
-
-  <script>
-    const counterDiv = document.getElementById("counter");
-    const clickBtn = document.getElementById("clickBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const historyList = document.getElementById("historyList");
-    const clickTab = document.getElementById("clickTab");
-    const historyTab = document.getElementById("historyTab");
-    const clickContent = document.getElementById("clickContent");
-    const historyContent = document.getElementById("historyContent");
-    const chartCanvas = document.getElementById("clickChart");
-    const lastUpdated = document.getElementById("lastUpdated");
-
-    let clickChart;
-
-    function setCookie(name, value, days) {
-      const expires = new Date(Date.now() + days * 864e5).toUTCString();
-      document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
-    }
-
-    function getCookie(name) {
-      return document.cookie.split('; ').reduce((r, v) => {
-        const parts = v.split('=');
-        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
-      }, null);
-    }
-
-    function getTodayKey() {
-      return new Date().toISOString().split('T')[0];
-    }
-
-    function getClickHistory() {
-      return document.cookie
-        .split('; ')
-        .map(c => {
-          const [k, v] = c.split('=');
-          return /^\d{4}-\d{2}-\d{2}$/.test(k) ? { date: k, count: parseInt(v) } : null;
-        })
-        .filter(Boolean)
-        .sort((a, b) => a.date.localeCompare(b.date));
-    }
-
-    const todayKey = getTodayKey();
-    let todayCount = parseInt(getCookie(todayKey)) || 0;
-    counterDiv.textContent = `Today's Clicks: ${todayCount}`;
-
-    clickContent.addEventListener("click", (event) => {
-      createRipple(event, clickBtn);
-      if (navigator.vibrate) navigator.vibrate(50);
-      playClickSound();
-      animateCountUp(todayCount, ++todayCount);
-      setCookie(todayKey, todayCount, 30);
-      updateHistory();
-    });
-
-    resetBtn.addEventListener("click", (event) => {
-      event.stopPropagation();
-      animateCountUp(todayCount, 0);
-      todayCount = 0;
-      setCookie(todayKey, todayCount, 30);
-      updateHistory();
-    });
-
-    function updateHistory() {
-      const history = getClickHistory();
-
-      historyList.innerHTML = '';
-      if (history.length === 0) {
-        historyList.innerHTML = '<li class="no-history">No history yet.</li>';
-      } else {
-        history.forEach(entry => {
-          const li = document.createElement('li');
-          li.textContent = `${entry.date}: ${entry.count} click${entry.count === 1 ? '' : 's'}`;
-          historyList.appendChild(li);
-        });
-      }
-
-      const labels = history.map(h => h.date);
-      const data = history.map(h => h.count);
-
-      if (clickChart) {
-        clickChart.data.labels = labels;
-        clickChart.data.datasets[0].data = data;
-        clickChart.update();
-      } else {
-        clickChart = new Chart(chartCanvas, {
-          type: 'bar',
-          data: {
-            labels,
-            datasets: [{
-              label: 'Clicks per Day',
-              data,
-              backgroundColor: 'rgba(255, 215, 0, 0.7)',
-              borderColor: '#fff',
-              borderWidth: 1,
-              borderRadius: 6,
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                callbacks: {
-                  label: context => `${context.raw} click${context.raw === 1 ? '' : 's'}`
-                }
-              }
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: { precision: 0, color: '#fff' },
-                grid: { color: 'rgba(255,255,255,0.1)' }
-              },
-              x: {
-                ticks: { color: '#fff' },
-                grid: { color: 'rgba(255,255,255,0.1)' }
-              }
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
             }
-          }
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                border-radius: 0;
+                height: 100vh;
+            }
+
+            button {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="bgAudio" src="assets/sounds/om-mantra-for-deep-meditation.mp3" autoplay loop preload="auto"
+        style="display: none;"></audio>
+    <audio id="clickSound" src="assets/sounds/temple-bell.mp3" preload="auto" style="display: none;"></audio>
+    <div class="app-container">
+        <div class="tab-bar">
+            <div class="tab active" id="clickTab">🕉️Jaap🕉️</div>
+            <div class="tab" id="historyTab">🕉️History</div>
+        </div>
+
+        <div class="tab-content" id="clickContent">
+            <div id="counter">Today's Count: 0</div>
+            <div id="lastUpdated">Last updated: Today</div>
+            <div style="text-align:center;">
+                <button id="clickBtn">🕉️</button>
+            </div>
+        </div>
+
+        <div class="tab-content tab-history hidden" id="historyContent">
+            <canvas id="clickChart"></canvas>
+            <ul id="historyList"></ul>
+            <button id="clearHistoryBtn" class="secondary">Clear History</button>
+        </div>
+
+        <button id="resetBtn" title="Reset today">↺</button>
+    </div>
+
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/chart.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('bgAudio');
+            audio.play().catch(() => {
+                document.body.addEventListener('click', () => {
+                    audio.play();
+                }, { once: true });
+            });
         });
-      }
-    }
+    </script>
 
-    clickTab.addEventListener("click", () => {
-      clickTab.classList.add("active");
-      historyTab.classList.remove("active");
-      clickContent.classList.remove("hidden");
-      historyContent.classList.add("hidden");
-    });
+    <script>
+        const counterDiv = document.getElementById("counter");
+        const clickBtn = document.getElementById("clickBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const historyList = document.getElementById("historyList");
+        const clickTab = document.getElementById("clickTab");
+        const historyTab = document.getElementById("historyTab");
+        const clickContent = document.getElementById("clickContent");
+        const historyContent = document.getElementById("historyContent");
+        const chartCanvas = document.getElementById("clickChart");
+        const lastUpdated = document.getElementById("lastUpdated");
 
-    historyTab.addEventListener("click", () => {
-      historyTab.classList.add("active");
-      clickTab.classList.remove("active");
-      clickContent.classList.add("hidden");
-      historyContent.classList.remove("hidden");
-      updateHistory();
-    });
+        let clickChart;
 
-    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
-    clearHistoryBtn.addEventListener("click", () => {
-      document.cookie.split("; ").forEach(cookie => {
-        const [key] = cookie.split("=");
-        if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
-          document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
         }
-      });
-      todayCount = 0;
-      setCookie(todayKey, todayCount, 30);
-      counterDiv.textContent = `Today's Clicks: 0`;
-      if (clickChart) {
-        clickChart.data.labels = [];
-        clickChart.data.datasets[0].data = [];
-        clickChart.update();
-      }
-      historyList.innerHTML = '<li class="no-history">No history yet.</li>';
-    });
 
-    function createRipple(event, element) {
-      const ripple = document.createElement("span");
-      ripple.className = "ripple";
-      const rect = element.getBoundingClientRect();
-      ripple.style.left = `${event.clientX - rect.left}px`;
-      ripple.style.top = `${event.clientY - rect.top}px`;
-      ripple.style.width = ripple.style.height = '100px';
-      ripple.style.position = 'absolute';
-      element.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 600);
-    }
-
-    function playClickSound() {
-      const sound = document.getElementById("clickSound");
-      sound.currentTime = 0;
-      sound.play();
-    }
-
-    function animateCountUp(start, end) {
-      const duration = 300;
-      const startTime = performance.now();
-
-      function update(now) {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const current = Math.floor(start + (end - start) * progress);
-        counterDiv.textContent = `Today's Clicks: ${current}`;
-        if (progress < 1) {
-          requestAnimationFrame(update);
+        function getCookie(name) {
+            return document.cookie.split('; ').reduce((r, v) => {
+                const parts = v.split('=');
+                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+            }, null);
         }
-      }
 
-      requestAnimationFrame(update);
-    }
+        function getTodayKey() {
+            return new Date().toISOString().split('T')[0];
+        }
 
-    updateHistory();
-  </script>
+        function getClickHistory() {
+            return document.cookie
+                .split('; ')
+                .map(c => {
+                    const [k, v] = c.split('=');
+                    return /^\d{4}-\d{2}-\d{2}$/.test(k) ? { date: k, count: parseInt(v) } : null;
+                })
+                .filter(Boolean)
+                .sort((a, b) => a.date.localeCompare(b.date));
+        }
+
+        const todayKey = getTodayKey();
+        let todayCount = parseInt(getCookie(todayKey)) || 0;
+        counterDiv.textContent = `Today's Clicks: ${todayCount}`;
+
+        clickContent.addEventListener("click", (event) => {
+            event.stopImmediatePropagation();
+            createRipple(event, clickBtn);
+            if (navigator.vibrate) navigator.vibrate(50);
+            playClickSound();
+            animateCountUp(todayCount, ++todayCount);
+            setCookie(todayKey, todayCount, 30);
+            updateHistory();
+        });
+
+        resetBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            animateCountUp(todayCount, 0);
+            todayCount = 0;
+            setCookie(todayKey, todayCount, 30);
+            updateHistory();
+        });
+
+        function updateHistory() {
+            const history = getClickHistory();
+
+            historyList.innerHTML = '';
+            if (history.length === 0) {
+                historyList.innerHTML = '<li class="no-history">No history yet.</li>';
+            } else {
+                history.forEach(entry => {
+                    const li = document.createElement('li');
+                    li.textContent = `${entry.date}: ${entry.count} click${entry.count === 1 ? '' : 's'}`;
+                    historyList.appendChild(li);
+                });
+            }
+
+            const labels = history.map(h => h.date);
+            const data = history.map(h => h.count);
+
+            if (clickChart) {
+                clickChart.data.labels = labels;
+                clickChart.data.datasets[0].data = data;
+                clickChart.update();
+            } else {
+                clickChart = new Chart(chartCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Clicks per Day',
+                            data,
+                            backgroundColor: 'rgba(255, 215, 0, 0.7)',
+                            borderColor: '#fff',
+                            borderWidth: 0.5,
+                            borderRadius: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: context => `${context.raw} click${context.raw === 1 ? '' : 's'}`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { precision: 0, color: '#fff' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            x: {
+                                ticks: { color: '#fff' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        clickTab.addEventListener("click", () => {
+            clickTab.classList.add("active");
+            historyTab.classList.remove("active");
+            clickContent.classList.remove("hidden");
+            historyContent.classList.add("hidden");
+        });
+
+        historyTab.addEventListener("click", () => {
+            historyTab.classList.add("active");
+            clickTab.classList.remove("active");
+            clickContent.classList.add("hidden");
+            historyContent.classList.remove("hidden");
+            updateHistory();
+        });
+
+        const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+        clearHistoryBtn.addEventListener("click", () => {
+            document.cookie.split("; ").forEach(cookie => {
+                const [key] = cookie.split("=");
+                if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+                    document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+                }
+            });
+            todayCount = 0;
+            setCookie(todayKey, todayCount, 30);
+            counterDiv.textContent = `Today's Clicks: 0`;
+            if (clickChart) {
+                clickChart.data.labels = [];
+                clickChart.data.datasets[0].data = [];
+                clickChart.update();
+            }
+            historyList.innerHTML = '<li class="no-history">No history yet.</li>';
+        });
+
+        function createRipple(event, element) {
+            const ripple = document.createElement("span");
+            ripple.className = "ripple";
+            const rect = element.getBoundingClientRect();
+            ripple.style.left = `${event.clientX - rect.left - 20}px`;
+            ripple.style.top = `${event.clientY - rect.top - 20}px`;
+            ripple.style.width = ripple.style.height = '50px';
+            ripple.style.position = 'absolute';
+            element.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 600);
+        }
+
+        function playClickSound() {
+            const sound = document.getElementById("clickSound");
+            sound.currentTime = 0;
+            sound.play();
+        }
+
+        function animateCountUp(start, end) {
+            const duration = 100;
+            const startTime = performance.now();
+
+            function update(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const current = Math.floor(start + (end - start) * progress);
+                counterDiv.textContent = `Today's Clicks: ${current}`;
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        updateHistory();
+    </script>
 </body>
+
 </html>
