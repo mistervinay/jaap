@@ -106,13 +106,17 @@
         }
 
         #counter {
-            font-size: 2rem;
+            font-size: 1rem;
             font-weight: 700;
             text-align: center;
             margin: 40px 0;
             color: #ffd700;
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
         }
+
+#counter span {
+font-size: 4rem;
+}
 
         #lastUpdated {
             text-align: center;
@@ -237,7 +241,7 @@
         </div>
 
         <div class="tab-content" id="clickContent">
-            <div id="counter">Today's Count: 0</div>
+            <div id="counter">Today's Count: <br/><span>0</span></div>
             <div id="lastUpdated">Last updated: Today</div>
             <div style="text-align:center;">
                 <button id="clickBtn">🕉️</button>
