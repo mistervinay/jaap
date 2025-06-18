@@ -346,7 +346,7 @@ Count: <br/><b>0</b>
             } else {
                 history.forEach(entry => {
                     const li = document.createElement('li');
-                    li.textContent = `${entry.date}: ${entry.count} click${entry.count === 1 ? '' : 's'}`;
+                    li.textContent = `${entry.date}: ${entry.count} Count ${entry.count === 1 ? '' : 's'}`;
                     historyList.appendChild(li);
                 });
             }
@@ -364,7 +364,7 @@ Count: <br/><b>0</b>
                     data: {
                         labels,
                         datasets: [{
-                            label: 'Clicks per Day',
+                            label: 'Count per Day',
                             data,
                             backgroundColor: 'rgba(255, 215, 0, 0.7)',
                             borderColor: '#fff',
@@ -378,7 +378,7 @@ Count: <br/><b>0</b>
                             legend: { display: false },
                             tooltip: {
                                 callbacks: {
-                                    label: context => `${context.raw} click${context.raw === 1 ? '' : 's'}`
+                                    label: context => `${context.raw} Count${context.raw === 1 ? '' : 's'}`
                                 }
                             }
                         },
@@ -457,7 +457,7 @@ Count: <br/><b>0</b>
             function update(now) {
                 const progress = Math.min((now - startTime) / duration, 1);
                 const current = Math.floor(start + (end - start) * progress);
-                counterDiv.textContent = `Today's Clicks: ${current}`;
+                counterDiv.textContent = `Count: ${current}`;
                 if (progress < 1) {
                     requestAnimationFrame(update);
                 }
