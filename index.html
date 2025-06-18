@@ -244,7 +244,7 @@ z-index: 2;
         <div class="tab-content" id="clickContent">
 <div>
             <div id="counter">
-Today's Count: <br/><b>0</b>
+Count: <br/><b>0</b>
 </div>
 </div>
             <div id="lastUpdated">Last updated: Today</div>
@@ -317,7 +317,7 @@ Today's Count: <br/><b>0</b>
 
         const todayKey = getTodayKey();
         let todayCount = parseInt(getCookie(todayKey)) || 0;
-        counterDiv.textContent = `Today's Clicks: ${todayCount}`;
+        counterDiv.textContent = `Count: ${todayCount}`;
 
         clickContent.addEventListener("click", (event) => {
             event.stopImmediatePropagation();
@@ -423,7 +423,7 @@ Today's Count: <br/><b>0</b>
             });
             todayCount = 0;
             setCookie(todayKey, todayCount, 30);
-            counterDiv.textContent = `Today's Clicks: 0`;
+            counterDiv.textContent = `Count: 0`;
             if (clickChart) {
                 clickChart.data.labels = [];
                 clickChart.data.datasets[0].data = [];
