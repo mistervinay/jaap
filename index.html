@@ -346,7 +346,7 @@ Count: <br/><b>0</b>
             } else {
                 history.forEach(entry => {
                     const li = document.createElement('li');
-                    li.textContent = `${entry.date}: ${entry.count} Count ${entry.count === 1 ? '' : 's'}`;
+                    li.textContent = `${entry.date}: ${entry.count} Count${entry.count === 1 ? '' : 's'}`;
                     historyList.appendChild(li);
                 });
             }
