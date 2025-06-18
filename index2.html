@@ -21,6 +21,10 @@
       align-items: center;
       height: 100vh;
       overflow: hidden;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;          /* Likely future */  
     }
 
     body::before {
@@ -280,7 +284,7 @@
     let todayCount = parseInt(getCookie(todayKey)) || 0;
     counterDiv.textContent = `Today's Clicks: ${todayCount}`;
 
-    clickBtn.addEventListener("click", (event) => {
+    clickContent.addEventListener("click", (event) => {
       createRipple(event, clickBtn);
       if (navigator.vibrate) navigator.vibrate(50);
       playClickSound();
