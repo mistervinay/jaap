@@ -4,6 +4,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- PWA Configuration -->
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="apple-mobile-web-app-title" content="Jaap">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Jaap Tracker</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕉️</text></svg>">
@@ -475,93 +480,31 @@
         }
 
         /*css for install webview app*/
-        #installPrompt {
+        #installContainer {
             position: fixed;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 15px;
-            max-width: 90%;
-            width: 400px;
-            box-shadow: var(--shadow);
+            right: 20px;
             z-index: 1000;
             display: none;
-            animation: slideUp 0.3s ease-out;
         }
 
-        @keyframes slideUp {
-            from {
-                transform: translate(-50%, 100%);
-            }
-
-            to {
-                transform: translate(-50%, 0);
-            }
-        }
-
-        #installPrompt h3 {
-            color: var(--accent-color);
-            margin: 0 0 10px 0;
-            font-size: 1.2rem;
-        }
-
-        #installPrompt p {
-            margin: 0 0 15px 0;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .prompt-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        #installPrompt button {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
+        #installBtn {
+            background: #bf360c;
+            color: white;
             border: none;
-            font-weight: 500;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
             cursor: pointer;
-            transition: var(--transition);
-        }
-
-        #installAppBtn {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        #installAppBtn:hover {
-            background: var(--primary-dark);
-        }
-
-        #dismissPromptBtn {
-            background: transparent;
-            border: 1px solid var(--text-secondary);
-            color: var(--text-secondary);
-        }
-
-        #dismissPromptBtn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            font-weight: bold;
+            gap: 8px;
+        }
+
+        #installBtn::before {
+            content: "⬇";
+            font-size: 18px;
         }
     </style>
 </head>
@@ -616,98 +559,10 @@
         </div>
     </div>
 
-    <!-- Add this prompt at the end of body but before scripts -->
-    <div id="installPrompt">
-        <div class="badge">!</div>
-        <h3>Install the App</h3>
-        <p>For better experience, add to home screen</p>
-        <div class="prompt-buttons">
-            <button id="installAppBtn">Install</button>
-            <button id="dismissPromptBtn">Later</button>
-        </div>
-    </div>
-
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/chart.js"></script>
     <script>
-        // Detect if running in mobile browser (not WebView)
-        function shouldShowInstallPrompt() {
-            // Don't show if already installed
-            if (window.matchMedia('(display-mode: standalone)').matches) return false;
-            if (window.navigator.standalone) return false;
-            if (document.referrer.includes('android-app://')) return false;
-
-            // Check if mobile device
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            if (!isMobile) return false;
-
-            // Check if in WebView
-            const isWebView = /(Android.*wv|iPhone.*wv|iPad.*wv)/.test(navigator.userAgent);
-            if (isWebView) return false;
-
-            // Check if user has dismissed before
-            if (localStorage.getItem('jaapPromptDismissed')) return false;
-
-            return true;
-        }
-
-        function showInstallPrompt() {
-            const prompt = document.getElementById('installPrompt');
-            const installBtn = document.getElementById('installAppBtn');
-            const dismissBtn = document.getElementById('dismissPromptBtn');
-
-            // Show different instructions based on platform
-            if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                installBtn.textContent = "Add to Home Screen";
-            } else {
-                installBtn.textContent = "Install App";
-            }
-
-            prompt.style.display = 'block';
-
-            // Auto-dismiss after 30 seconds
-            setTimeout(() => {
-                prompt.style.display = 'none';
-            }, 30000);
-
-            // Install button handler
-            installBtn.addEventListener('click', () => {
-                if (window.deferredPrompt) {
-                    // PWA installation flow
-                    window.deferredPrompt.prompt();
-                    window.deferredPrompt.userChoice.then(choiceResult => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted install prompt');
-                        }
-                        prompt.style.display = 'none';
-                    });
-                } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    // iOS instructions
-                    alert('1. Tap the Share button\n2. Select "Add to Home Screen"');
-                    localStorage.setItem('jaapPromptDismissed', 'true');
-                    prompt.style.display = 'none';
-                } else {
-                    // Android fallback
-                    alert('Tap the menu button (⋮) and select "Install App" or "Add to Home Screen"');
-                    localStorage.setItem('jaapPromptDismissed', 'true');
-                    prompt.style.display = 'none';
-                }
-            });
-
-            // Dismiss button handler
-            dismissBtn.addEventListener('click', () => {
-                localStorage.setItem('jaapPromptDismissed', 'true');
-                prompt.style.display = 'none';
-            });
-        }
-
-        // Listen for beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            window.deferredPrompt = e;
-        });
-
-        // Check on load
+        // Initialize
         window.addEventListener('DOMContentLoaded', () => {
             // Audio initialization
             const audio = document.getElementById('bgAudio');
@@ -717,11 +572,6 @@
                     audio.play();
                 }, { once: true });
             });
-
-            // Show install prompt if conditions are met
-            if (shouldShowInstallPrompt()) {
-                setTimeout(showInstallPrompt, 3000); // Show after 3 seconds
-            }
         });
     </script>
 
