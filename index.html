@@ -9,11 +9,16 @@
     <meta name="apple-mobile-web-app-title" content="Jaap">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Jaap Tracker</title>
+    <!-- Fabicon -->
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕉️</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
+    <title>Jaap Tracker</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Poppins:wght@300;400;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary-color: #ff6b35;
@@ -88,14 +93,13 @@
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid var(--card-border);
-            display: none;
         }
 
         .header h1 {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--accent-color);
-            margin-bottom: 4px;
+            margin-bottom: 0px;
         }
 
         .header p {
@@ -209,8 +213,11 @@
         }
 
         .counter-value {
+            font-family: "Merriweather", serif;
+            font-optical-sizing: auto;
             font-size: 4.5rem;
-            font-weight: 700;
+            font-weight: 900;
+            letter-spacing: 2px;
             color: var(--primary-color);
             text-shadow: 0 0 15px rgba(255, 107, 53, 0.5);
             line-height: 1;
@@ -275,7 +282,7 @@
         }
 
         .reset-button {
-            position: absolute;
+            position: fixed;
             bottom: 20px;
             right: 20px;
             width: 50px;
@@ -440,6 +447,7 @@
             }
 
             .header {
+                display: none;
                 padding: 16px;
             }
 
@@ -566,7 +574,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             // Audio initialization
             const audio = document.getElementById('bgAudio');
-            audio.volume = 0.3;
+            audio.volume = 0.2;
             audio.play().catch(() => {
                 document.body.addEventListener('click', () => {
                     audio.play();
@@ -613,14 +621,26 @@
             const yesterday = new Date(today);
             yesterday.setDate(yesterday.getDate() - 1);
 
-            if (date.toDateString() === today.toDateString()) return "Today";
-            if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+            if (date.toDateString() === today.toDateString()) {
+                // Special format for today - show full date with time
+                const hours = today.getHours();
+                const minutes = today.getMinutes();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const formattedHours = hours % 12 || 12;
+                const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+                return `Today`;
+            }
 
-            return date.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
-            });
+            if (date.toDateString() === yesterday.toDateString()) {
+                return "Yesterday";
+            }
+
+            // Format for all other dates: "19 Jun 2025"
+            const day = date.getDate();
+            const month = date.toLocaleString('default', { month: 'short' });
+            const year = date.getFullYear();
+
+            return `${day} ${month} ${year}`;
         }
 
         function getClickHistory() {
@@ -631,7 +651,8 @@
                     return /^\d{4}-\d{2}-\d{2}$/.test(k) ? { date: k, count: parseInt(v) } : null;
                 })
                 .filter(Boolean)
-                .sort((a, b) => a.date.localeCompare(b.date));
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+            // uper Sort by date descending (newest first)
         }
 
         const todayKey = getTodayKey();
@@ -828,7 +849,7 @@
         function playClickSound() {
             const sound = document.getElementById("clickSound");
             sound.currentTime = 0;
-            sound.volume = 0.3;
+            sound.volume = 0.1;
             sound.play();
         }
 
