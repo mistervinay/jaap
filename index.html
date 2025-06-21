@@ -7,30 +7,42 @@
     <title>Jaap Tracker</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕉️</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
     <style>
+        :root {
+            --primary-color: #ff6b35;
+            --primary-dark: #bf360c;
+            --primary-light: #ff9e7d;
+            --accent-color: #f7c59f;
+            --text-color: #f8f8f8;
+            --text-secondary: #b8b8b8;
+            --bg-dark: #0a0a0a;
+            --bg-darker: #050505;
+            --bg-gradient: linear-gradient(135deg, #1a0024 0%, #000 100%);
+            --card-bg: rgba(30, 30, 30, 0.5);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(to bottom, #1a0024, #000);
-            color: #ffd700;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-color);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
-            -webkit-user-select: none;
-            /* Chrome all / Safari all */
-            -moz-user-select: none;
-            /* Firefox all */
-            -ms-user-select: none;
-            /* IE 10+ */
             user-select: none;
-            /* Likely future */
+            line-height: 1.6;
         }
 
         body::before {
@@ -44,170 +56,344 @@
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
-            opacity: 0.25;
+            opacity: 0.15;
             z-index: 0;
+            pointer-events: none;
         }
 
         .app-container {
-            background-color: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(15px);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             width: 100%;
             max-width: 420px;
             height: 90vh;
+            max-height: 800px;
             display: flex;
             flex-direction: column;
             position: relative;
             z-index: 1;
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 300;
         }
 
         .tab-bar {
             display: flex;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.07);
-            border-radius: 20px 20px 0 0;
+            background-color: rgba(20, 20, 20, 0.7);
+            position: relative;
+        }
+
+        .tab-bar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 107, 53, 0.5) 50%, transparent 100%);
         }
 
         .tab {
             flex: 1;
             text-align: center;
-            padding: 15px 0;
+            padding: 16px 0;
             cursor: pointer;
-            color: #c8c8c8;
-            font-weight: 600;
+            color: var(--text-secondary);
+            font-weight: 500;
             background: transparent;
             font-size: 1rem;
-            transition: background-color 0.3s ease;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
         }
 
         .tab.active {
-            background-color: rgba(255, 255, 255, 0.12);
-            color: #ffd700;
-            box-shadow: inset 0 -2px 0 #ffd700;
+            color: var(--text-color);
+            font-weight: 600;
         }
 
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab.active,
         .tab:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
         .tab-content {
             flex: 1;
-            padding: 20px;
+            padding: 24px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
+        }
+
+        .tab-jaap {
+            overflow: hidden;
+        }
+
+        .tab-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tab-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .tab-content::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 6px;
         }
 
         .tab-history {
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .hidden {
             display: none;
         }
 
-        #counter {
-            font-size: 2rem;
-            font-weight: 700;
-            text-align: center;
-            margin: 40px 0;
-            color: #ffd700;
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
-        }
-
-#counter b {
-font-size: 4rem;
-}
-
-        #lastUpdated {
-            text-align: center;
-            color: #aaa;
-            font-size: 0.8rem;
-            margin-top: -30px;
-            margin-bottom: 30px;
-        }
-
-        #historyList {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        #historyList li {
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.95rem;
-        }
-
-        .no-history {
-            text-align: center;
-            color: #aaa;
-            font-style: italic;
-            margin-top: 20px;
-        }
-
-        canvas {
-            width: 100% !important;
-            max-height: 250px;
-        }
-
-        button {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            font-size: 2rem;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            background: radial-gradient(circle, #ffcc00, #ff9900);
-            color: #000;
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
-            transition: transform 0.2s ease-in-out;
+        .counter-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px 0;
             position: relative;
         }
 
-        button:hover {
-            transform: scale(1.05);
+        .counter-label {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            text-align: center;
         }
 
-        #resetBtn {
-            position: fixed;
+        .counter-value {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px rgba(255, 107, 53, 0.5);
+            line-height: 1;
+            margin: 10px 0;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .counter-value::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--primary-color) 50%, transparent 100%);
+        }
+
+        .last-updated {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin: 10px 0 30px;
+            font-weight: 300;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .main-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 2.2rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            background: radial-gradient(circle, var(--primary-color), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 5px 20px rgba(191, 54, 12, 0.5),
+                0 0 0 4px rgba(255, 107, 53, 0.2);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .main-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(191, 54, 12, 0.6),
+                0 0 0 4px rgba(255, 107, 53, 0.3);
+        }
+
+        .main-button:active {
+            transform: translateY(1px) scale(0.98);
+        }
+
+        .reset-button {
+            position: absolute;
             bottom: 20px;
             right: 20px;
             width: 50px;
             height: 50px;
+            border-radius: 50%;
             font-size: 1.2rem;
-            background: #cc0000;
+            background: var(--primary-dark);
             color: white;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
-z-index: 2;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(191, 54, 12, 0.4);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
         }
 
-        .secondary {
-            width: auto;
-            height: auto;
-            background: #555;
-            color: #cacaca;
-            padding: 8px 16px;
-            margin: 20px auto;
-            display: block;
+        .reset-button:hover {
+            background: #8c2a06;
+            transform: rotate(90deg);
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            flex: 1;
+        }
+
+        .history-list li {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .history-list li:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .history-list li.no-history {
+            justify-content: center;
+        }
+
+        .history-date {
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .history-count {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .no-history {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.95rem;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .action-button {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-color);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-size: 0.9rem;
-            font-weight: normal;
-            border-radius: 8px;
-            box-shadow: 0 0 25px rgb(57 57 57 / 75%);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 20px auto 0;
+            text-align: center;
         }
 
-        .secondary:hover {
-            background-color: #666;
+        .action-button:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
         }
 
-        /* Ripple */
+        .action-button:active {
+            transform: translateY(0);
+        }
+
+        .action-button.warning {
+            background: rgba(191, 54, 12, 0.2);
+            color: var(--primary-light);
+        }
+
+        .action-button.warning:hover {
+            background: rgba(191, 54, 12, 0.3);
+        }
+
+        /* Ripple Effect */
         .ripple {
             position: absolute;
             border-radius: 50%;
             transform: scale(0);
             animation: ripple-animation 0.6s linear;
-            background-color: rgba(0, 122, 204, 0.3);
+            background-color: rgba(255, 107, 53, 0.3);
             pointer-events: none;
+            z-index: 0;
         }
 
         @keyframes ripple-animation {
@@ -217,16 +403,78 @@ z-index: 2;
             }
         }
 
-        @media (max-width: 480px) {
-            .app-container {
-                border-radius: 0;
-                height: 100vh;
+        /* Pulse Animation */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
             }
 
-            button {
-                width: 70px;
-                height: 70px;
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
             }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 574px) {
+            .app-container {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                max-height: none;
+                border: none;
+                border-radius: 0;
+            }
+
+            .tab-bar {
+                border-radius: 0;
+            }
+
+            .header {
+                padding: 16px;
+            }
+
+            .counter-value {
+                font-size: 4rem;
+            }
+
+            .main-button {
+                width: 75px;
+                height: 75px;
+                font-size: 2rem;
+            }
+        }
+
+        /* Fancy decorative elements */
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--primary-color), transparent 70%);
+            top: -150px;
+            right: -150px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, var(--accent-color), transparent 70%);
+            bottom: -100px;
+            left: -100px;
         }
     </style>
 </head>
@@ -235,29 +483,49 @@ z-index: 2;
     <audio id="bgAudio" src="assets/sounds/om-mantra-for-deep-meditation.mp3" autoplay loop preload="auto"
         style="display: none;"></audio>
     <audio id="clickSound" src="assets/sounds/temple-bell.mp3" preload="auto" style="display: none;"></audio>
+
     <div class="app-container">
-        <div class="tab-bar">
-            <div class="tab active" id="clickTab">🕉️Jaap🕉️</div>
-            <div class="tab" id="historyTab">🕉️History</div>
+        <div class="decorative-circle circle-1"></div>
+        <div class="decorative-circle circle-2"></div>
+
+        <div class="header" style="display: none;">
+            <h1>Jaap Tracker</h1>
+            <p>Count your spiritual repetitions</p>
         </div>
 
-        <div class="tab-content" id="clickContent">
-<div>
-            <div id="counter">
-Count: <br/><b>0</b>
-</div>
-</div>
-            <div id="lastUpdated">Last updated: Today</div>
-            <div style="text-align:center;">
-                <button id="clickBtn">🕉️</button>
+        <div class="tab-bar">
+            <div class="tab active" id="clickTab">
+                <span>Counter</span>
             </div>
-            <button id="resetBtn" title="Reset today">↺</button>
+            <div class="tab" id="historyTab">
+                <span>History</span>
+            </div>
+        </div>
+
+        <div class="tab-content tab-jaap" id="clickContent">
+            <div class="counter-container">
+                <div class="counter-label">Today's Jaap Count</div>
+                <div class="counter-value" id="counter">0</div>
+                <div class="last-updated" id="lastUpdated">Last updated: Just now</div>
+            </div>
+
+            <div class="button-container">
+                <button class="main-button pulse" id="clickBtn">🕉️</button>
+            </div>
+
+            <button class="reset-button" id="resetBtn" title="Reset counter">↻</button>
         </div>
 
         <div class="tab-content tab-history hidden" id="historyContent">
-            <canvas id="clickChart"></canvas>
-            <ul id="historyList"></ul>
-            <button id="clearHistoryBtn" class="secondary">Clear History</button>
+            <div class="chart-container">
+                <canvas id="clickChart"></canvas>
+            </div>
+
+            <ul class="history-list" id="historyList">
+                <li class="no-history">No history available yet</li>
+            </ul>
+
+            <button class="action-button warning" id="clearHistoryBtn">Clear All History</button>
         </div>
     </div>
 
@@ -266,6 +534,7 @@ Count: <br/><b>0</b>
     <script>
         window.addEventListener('DOMContentLoaded', () => {
             const audio = document.getElementById('bgAudio');
+            audio.volume = 0.3; // Lower volume for background music
             audio.play().catch(() => {
                 document.body.addEventListener('click', () => {
                     audio.play();
@@ -275,7 +544,7 @@ Count: <br/><b>0</b>
     </script>
 
     <script>
-        const counterDiv = document.getElementById("counter");
+        const counterEl = document.getElementById("counter");
         const clickBtn = document.getElementById("clickBtn");
         const resetBtn = document.getElementById("resetBtn");
         const historyList = document.getElementById("historyList");
@@ -287,10 +556,12 @@ Count: <br/><b>0</b>
         const lastUpdated = document.getElementById("lastUpdated");
 
         let clickChart;
+        let isAnimating = false;
 
+        // Enhanced cookie functions
         function setCookie(name, value, days) {
             const expires = new Date(Date.now() + days * 864e5).toUTCString();
-            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax; Secure`;
         }
 
         function getCookie(name) {
@@ -301,7 +572,24 @@ Count: <br/><b>0</b>
         }
 
         function getTodayKey() {
-            return new Date().toISOString().split('T')[0];
+            const now = new Date();
+            return now.toISOString().split('T')[0];
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) return "Today";
+            if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+
+            return date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+            });
         }
 
         function getClickHistory() {
@@ -317,41 +605,67 @@ Count: <br/><b>0</b>
 
         const todayKey = getTodayKey();
         let todayCount = parseInt(getCookie(todayKey)) || 0;
-        counterDiv.textContent = `Count: ${todayCount}`;
+        counterEl.textContent = todayCount;
+
+        // Initialize last updated text
+        updateLastUpdatedText();
 
         clickContent.addEventListener("click", (event) => {
-            event.stopImmediatePropagation();
+            if (isAnimating) return;
+
             createRipple(event, clickBtn);
             if (navigator.vibrate) navigator.vibrate(50);
             playClickSound();
-            animateCountUp(todayCount, ++todayCount);
+
+            todayCount++;
+            animateCountUp(todayCount - 1, todayCount);
             setCookie(todayKey, todayCount, 30);
-            updateHistory();
+
+            // Update last updated time
+            updateLastUpdatedText();
         });
 
         resetBtn.addEventListener("click", (event) => {
             event.stopPropagation();
-            animateCountUp(todayCount, 0);
-            todayCount = 0;
-            setCookie(todayKey, todayCount, 30);
-            updateHistory();
+            if (todayCount === 0) return;
+
+            if (confirm("Are you sure you want to reset today's count?")) {
+                animateCountUp(todayCount, 0);
+                todayCount = 0;
+                setCookie(todayKey, todayCount, 30);
+                updateLastUpdatedText();
+            }
         });
+
+        function updateLastUpdatedText() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedHours = hours % 12 || 12;
+            const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+            lastUpdated.textContent = `Last updated: ${formattedHours}:${formattedMinutes} ${ampm}`;
+        }
 
         function updateHistory() {
             const history = getClickHistory();
 
             historyList.innerHTML = '';
             if (history.length === 0) {
-                historyList.innerHTML = '<li class="no-history">No history yet.</li>';
+                historyList.innerHTML = '<li class="no-history">No history available yet</li>';
             } else {
                 history.forEach(entry => {
                     const li = document.createElement('li');
-                    li.textContent = `${entry.date}: ${entry.count} Count${entry.count === 1 ? '' : 's'}`;
+                    li.innerHTML = `
+                        <span class="history-date">${formatDate(entry.date)}</span>
+                        <span class="history-count">${entry.count} ${entry.count === 1 ? 'Count' : 'Counts'}</span>
+                    `;
                     historyList.appendChild(li);
                 });
             }
 
-            const labels = history.map(h => h.date);
+            const labels = history.map(h => formatDate(h.date));
             const data = history.map(h => h.count);
 
             if (clickChart) {
@@ -359,39 +673,75 @@ Count: <br/><b>0</b>
                 clickChart.data.datasets[0].data = data;
                 clickChart.update();
             } else {
-                clickChart = new Chart(chartCanvas, {
+                const ctx = chartCanvas.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 250);
+                gradient.addColorStop(0, 'rgba(255, 107, 53, 0.8)');
+                gradient.addColorStop(1, 'rgba(191, 54, 12, 0.5)');
+
+                clickChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels,
                         datasets: [{
                             label: 'Count per Day',
                             data,
-                            backgroundColor: 'rgba(255, 215, 0, 0.7)',
-                            borderColor: '#fff',
-                            borderWidth: 0.5,
-                            borderRadius: 0,
+                            backgroundColor: gradient,
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            borderSkipped: false,
                         }]
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             legend: { display: false },
                             tooltip: {
+                                backgroundColor: 'rgba(30, 30, 30, 0.9)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                borderWidth: 1,
+                                padding: 12,
                                 callbacks: {
-                                    label: context => `${context.raw} Count${context.raw === 1 ? '' : 's'}`
+                                    label: context => `${context.raw} ${context.raw === 1 ? 'Count' : 'Counts'}`
                                 }
                             }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                ticks: { precision: 0, color: '#fff' },
-                                grid: { color: 'rgba(255,255,255,0.1)' }
+                                ticks: {
+                                    precision: 0,
+                                    color: 'rgba(255, 255, 255, 0.6)',
+                                    font: {
+                                        family: 'Poppins',
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)',
+                                    drawBorder: false
+                                }
                             },
                             x: {
-                                ticks: { color: '#fff' },
-                                grid: { color: 'rgba(255,255,255,0.1)' }
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.6)',
+                                    font: {
+                                        family: 'Poppins',
+                                        size: 11
+                                    }
+                                },
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
+                                }
                             }
+                        },
+                        animation: {
+                            duration: 1000,
+                            easing: 'easeOutQuart'
                         }
                     }
                 });
@@ -415,21 +765,24 @@ Count: <br/><b>0</b>
 
         const clearHistoryBtn = document.getElementById("clearHistoryBtn");
         clearHistoryBtn.addEventListener("click", () => {
-            document.cookie.split("; ").forEach(cookie => {
-                const [key] = cookie.split("=");
-                if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
-                    document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+            if (confirm("Are you sure you want to clear ALL history? This cannot be undone.")) {
+                document.cookie.split("; ").forEach(cookie => {
+                    const [key] = cookie.split("=");
+                    if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+                        document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+                    }
+                });
+                todayCount = 0;
+                setCookie(todayKey, todayCount, 30);
+                counterEl.textContent = '0';
+                if (clickChart) {
+                    clickChart.data.labels = [];
+                    clickChart.data.datasets[0].data = [];
+                    clickChart.update();
                 }
-            });
-            todayCount = 0;
-            setCookie(todayKey, todayCount, 30);
-            counterDiv.textContent = `Count: 0`;
-            if (clickChart) {
-                clickChart.data.labels = [];
-                clickChart.data.datasets[0].data = [];
-                clickChart.update();
+                historyList.innerHTML = '<li class="no-history">No history available yet</li>';
+                updateLastUpdatedText();
             }
-            historyList.innerHTML = '<li class="no-history">No history yet.</li>';
         });
 
         function createRipple(event, element) {
@@ -439,7 +792,6 @@ Count: <br/><b>0</b>
             ripple.style.left = `${event.clientX - rect.left - 20}px`;
             ripple.style.top = `${event.clientY - rect.top - 20}px`;
             ripple.style.width = ripple.style.height = '50px';
-            ripple.style.position = 'absolute';
             element.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
         }
@@ -447,25 +799,33 @@ Count: <br/><b>0</b>
         function playClickSound() {
             const sound = document.getElementById("clickSound");
             sound.currentTime = 0;
+            sound.volume = 0.3;
             sound.play();
         }
 
         function animateCountUp(start, end) {
-            const duration = 100;
+            if (start === end) return;
+
+            isAnimating = true;
+            const duration = 600;
             const startTime = performance.now();
 
             function update(now) {
                 const progress = Math.min((now - startTime) / duration, 1);
                 const current = Math.floor(start + (end - start) * progress);
-                counterDiv.textContent = `Count: ${current}`;
+                counterEl.textContent = current;
+
                 if (progress < 1) {
                     requestAnimationFrame(update);
+                } else {
+                    isAnimating = false;
                 }
             }
 
             requestAnimationFrame(update);
         }
 
+        // Initialize history view
         updateHistory();
     </script>
 </body>
