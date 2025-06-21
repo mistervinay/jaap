@@ -83,6 +83,7 @@
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid var(--card-border);
+            display: none;
         }
 
         .header h1 {
@@ -146,7 +147,6 @@
             border-radius: 3px 3px 0 0;
         }
 
-        .tab.active,
         .tab:hover {
             color: var(--text-color);
             background-color: rgba(255, 255, 255, 0.05);
@@ -315,10 +315,6 @@
             background: rgba(255, 255, 255, 0.03);
         }
 
-        .history-list li.no-history {
-            justify-content: center;
-        }
-
         .history-date {
             color: var(--text-secondary);
             font-weight: 300;
@@ -336,6 +332,7 @@
             margin-top: 40px;
             padding: 20px;
             font-size: 0.95rem;
+            justify-content: center !important;
         }
 
         .chart-container {
@@ -476,6 +473,73 @@
             bottom: -100px;
             left: -100px;
         }
+
+        /*css for install webview app*/
+        #browserPrompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #browserPromptContent {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 90%;
+            width: 400px;
+            border: 1px solid var(--card-border);
+        }
+
+        #browserPrompt h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        #browserPrompt p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        #browserPrompt button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 5px;
+            transition: var(--transition);
+        }
+
+        #browserPrompt button:hover {
+            background: var(--primary-dark);
+        }
+
+        #browserPrompt button.secondary {
+            background: transparent;
+            border: 1px solid var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        #countdown {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 
@@ -488,7 +552,7 @@
         <div class="decorative-circle circle-1"></div>
         <div class="decorative-circle circle-2"></div>
 
-        <div class="header" style="display: none;">
+        <div class="header">
             <h1>Jaap Tracker</h1>
             <p>Count your spiritual repetitions</p>
         </div>
@@ -529,17 +593,106 @@
         </div>
     </div>
 
+    <!-- Add this prompt at the end of body but before scripts -->
+    <div id="browserPrompt" style="display: none;">
+        <div id="browserPromptContent">
+            <h3>For Better Experience</h3>
+            <p>Install this app for smoother performance and offline access.</p>
+            <div id="installButtons">
+                <button id="installPwaButton">Install App</button>
+                <button id="continueBrowserButton" class="secondary">Continue in Browser</button>
+            </div>
+            <div id="countdown">Closing in 15 seconds...</div>
+        </div>
+    </div>
+
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/chart.js"></script>
     <script>
+        // Detect if running in WebView
+        function isInWebView() {
+            // Check for WebView in Android and iOS
+            return /(Android.*wv|iPhone.*wv|iPad.*wv)/.test(navigator.userAgent) ||
+                document.referrer.includes('android-app://') ||
+                (window.navigator.standalone === true);
+        }
+
+        // Show browser prompt if not in WebView and first visit
+        function checkFirstVisit() {
+            if (isInWebView()) return;
+
+            const alreadyVisited = localStorage.getItem('jaapTrackerVisited');
+            if (!alreadyVisited) {
+                showBrowserPrompt();
+            }
+        }
+
+        let countdownInterval;
+        let timeLeft = 15;
+
+        function showBrowserPrompt() {
+            const prompt = document.getElementById('browserPrompt');
+            const countdownEl = document.getElementById('countdown');
+            const installBtn = document.getElementById('installPwaButton');
+            const continueBtn = document.getElementById('continueBrowserButton');
+
+            prompt.style.display = 'flex';
+
+            // Start countdown
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                countdownEl.textContent = `Closing in ${timeLeft} seconds...`;
+
+                if (timeLeft <= 0) {
+                    closeBrowserPrompt();
+                }
+            }, 1000);
+
+            // Install button handler
+            installBtn.addEventListener('click', () => {
+                if (window.deferredPrompt) {
+                    window.deferredPrompt.prompt();
+                    window.deferredPrompt.userChoice.then(choiceResult => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted install prompt');
+                        }
+                        closeBrowserPrompt();
+                    });
+                } else {
+                    // Fallback for browsers without PWA support
+                    closeBrowserPrompt();
+                }
+            });
+
+            // Continue button handler
+            continueBtn.addEventListener('click', closeBrowserPrompt);
+        }
+
+        function closeBrowserPrompt() {
+            clearInterval(countdownInterval);
+            document.getElementById('browserPrompt').style.display = 'none';
+            localStorage.setItem('jaapTrackerVisited', 'true');
+        }
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+        });
+
+        // Check on load
         window.addEventListener('DOMContentLoaded', () => {
+            // Audio initialization
             const audio = document.getElementById('bgAudio');
-            audio.volume = 0.3; // Lower volume for background music
+            audio.volume = 0.3;
             audio.play().catch(() => {
                 document.body.addEventListener('click', () => {
                     audio.play();
                 }, { once: true });
             });
+
+            // Check for first visit
+            setTimeout(checkFirstVisit, 1000);
         });
     </script>
 
@@ -556,7 +709,6 @@
         const lastUpdated = document.getElementById("lastUpdated");
 
         let clickChart;
-        let isAnimating = false;
 
         // Enhanced cookie functions
         function setCookie(name, value, days) {
@@ -611,14 +763,12 @@
         updateLastUpdatedText();
 
         clickContent.addEventListener("click", (event) => {
-            if (isAnimating) return;
-
             createRipple(event, clickBtn);
             if (navigator.vibrate) navigator.vibrate(50);
             playClickSound();
 
             todayCount++;
-            animateCountUp(todayCount - 1, todayCount);
+            counterEl.textContent = todayCount;
             setCookie(todayKey, todayCount, 30);
 
             // Update last updated time
@@ -630,8 +780,8 @@
             if (todayCount === 0) return;
 
             if (confirm("Are you sure you want to reset today's count?")) {
-                animateCountUp(todayCount, 0);
                 todayCount = 0;
+                counterEl.textContent = '0';
                 setCookie(todayKey, todayCount, 30);
                 updateLastUpdatedText();
             }
@@ -801,28 +951,6 @@
             sound.currentTime = 0;
             sound.volume = 0.3;
             sound.play();
-        }
-
-        function animateCountUp(start, end) {
-            if (start === end) return;
-
-            isAnimating = true;
-            const duration = 600;
-            const startTime = performance.now();
-
-            function update(now) {
-                const progress = Math.min((now - startTime) / duration, 1);
-                const current = Math.floor(start + (end - start) * progress);
-                counterEl.textContent = current;
-
-                if (progress < 1) {
-                    requestAnimationFrame(update);
-                } else {
-                    isAnimating = false;
-                }
-            }
-
-            requestAnimationFrame(update);
         }
 
         // Initialize history view
