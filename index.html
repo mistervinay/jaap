@@ -745,7 +745,7 @@
         clickContent.addEventListener("click", (event) => {
             createRipple(event, clickBtn);
             if (navigator.vibrate) navigator.vibrate(50);
-            playClickSound();
+            // playClickSound();
 
             todayCount++;
             counterEl.textContent = todayCount;
