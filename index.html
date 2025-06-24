@@ -202,6 +202,7 @@
             align-items: center;
             justify-content: center;
             margin: 30px 0;
+            margin-bottom: 20px;
             position: relative;
         }
 
@@ -284,12 +285,12 @@
 
         .reset-button {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
+            top: 16px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 1rem;
             background: var(--primary-dark);
             color: white;
             border: none;
@@ -312,6 +313,8 @@
             padding: 0;
             margin: 20px 0;
             flex: 1;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .history-list li {
@@ -489,6 +492,35 @@
             left: -100px;
         }
 
+        .music-toggle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: transparent;
+            border: none;
+            color: var(--accent-color);
+            font-size: 1rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .music-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .music-toggle.muted {
+            opacity: 0.6;
+            color: var(--text-secondary);
+        }
+
         /*css for install webview app*/
         #installContainer {
             position: fixed;
@@ -543,6 +575,7 @@
         </div>
 
         <div class="tab-content tab-jaap" id="clickContent">
+            <button id="musicToggle" class="music-toggle" title="Toggle background music">🔊</button>
             <div class="counter-container">
                 <div class="counter-label">Today's Jaap Count</div>
                 <div class="counter-value" id="counter">0</div>
@@ -572,16 +605,58 @@
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/chart.js"></script>
     <script>
-        // Initialize
+        // Add this near your other DOM element declarations
+        const musicToggle = document.getElementById("musicToggle");
+        const bgAudio = document.getElementById("bgAudio");
+
+        // Initialize music state from localStorage or default to playing
+        let isMusicPlaying = localStorage.getItem('musicPlaying') !== 'false';
+
+        // Set initial state
+        updateMusicState();
+
+        // Music toggle functionality
+        musicToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isMusicPlaying = !isMusicPlaying;
+            updateMusicState();
+            localStorage.setItem('musicPlaying', isMusicPlaying);
+        });
+
+        function updateMusicState() {
+            if (isMusicPlaying) {
+                bgAudio.play().catch(e => console.log("Audio play prevented:", e));
+                musicToggle.textContent = "🔊";
+                musicToggle.classList.remove("muted");
+                musicToggle.title = "Mute background music";
+            } else {
+                bgAudio.pause();
+                musicToggle.textContent = "🔇";
+                musicToggle.classList.add("muted");
+                musicToggle.title = "Unmute background music";
+            }
+        }
+
+        // Update your existing audio initialization to respect the saved state
         window.addEventListener('DOMContentLoaded', () => {
-            // Audio initialization
-            const audio = document.getElementById('bgAudio');
-            audio.volume = 0.2;
-            audio.play().catch(() => {
-                document.body.addEventListener('click', () => {
-                    audio.play();
-                }, { once: true });
-            });
+            bgAudio.volume = 0.2;
+            if (isMusicPlaying) {
+                bgAudio.play().catch(() => {
+                    // If autoplay is blocked, set music as paused and update UI
+                    isMusicPlaying = false;
+                    updateMusicState();
+                    localStorage.setItem('musicPlaying', false);
+
+                    // Add click-to-play functionality
+                    document.body.addEventListener('click', () => {
+                        isMusicPlaying = true;
+                        updateMusicState();
+                        localStorage.setItem('musicPlaying', true);
+                    }, { once: true });
+                });
+            } else {
+                bgAudio.pause();
+            }
         });
     </script>
 
