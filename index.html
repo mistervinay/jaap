@@ -18,540 +18,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Poppins:wght@300;400;800&display=swap"
-        rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #ff6b35;
-            --primary-dark: #bf360c;
-            --primary-light: #ff9e7d;
-            --accent-color: #f7c59f;
-            --text-color: #f8f8f8;
-            --text-secondary: #b8b8b8;
-            --bg-dark: #0a0a0a;
-            --bg-darker: #050505;
-            --bg-gradient: linear-gradient(135deg, #1a0024 0%, #000 100%);
-            --card-bg: rgba(30, 30, 30, 0.5);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            user-select: none;
-            line-height: 1.6;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('assets/images/bg.webp');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            opacity: 0.15;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .app-container {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            width: 100%;
-            max-width: 420px;
-            height: 90vh;
-            max-height: 800px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-        }
-
-        .header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            margin-bottom: 0px;
-        }
-
-        .header p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 300;
-        }
-
-        .tab-bar {
-            display: flex;
-            width: 100%;
-            background-color: rgba(20, 20, 20, 0.7);
-            position: relative;
-        }
-
-        .tab-bar::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(255, 107, 53, 0.5) 50%, transparent 100%);
-        }
-
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 16px 0;
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-weight: 500;
-            background: transparent;
-            font-size: 1rem;
-            transition: var(--transition);
-            position: relative;
-            z-index: 1;
-        }
-
-        .tab.active {
-            color: var(--text-color);
-            font-weight: 600;
-        }
-
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 3px;
-            background: var(--primary-color);
-            border-radius: 3px 3px 0 0;
-        }
-
-        .tab:hover {
-            color: var(--text-color);
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .tab-content {
-            flex: 1;
-            padding: 24px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-color) transparent;
-            position: relative;
-        }
-
-        .tab-jaap {
-            overflow: hidden;
-        }
-
-        .tab-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .tab-content::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .tab-content::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color);
-            border-radius: 6px;
-        }
-
-        .tab-history {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .counter-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 30px 0;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .counter-label {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: var(--accent-color);
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .counter-value {
-            font-family: "Merriweather", serif;
-            font-optical-sizing: auto;
-            font-size: 4.5rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            color: var(--primary-color);
-            text-shadow: 0 0 15px rgba(255, 107, 53, 0.5);
-            line-height: 1;
-            margin: 10px 0;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .counter-value::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent 0%, var(--primary-color) 50%, transparent 100%);
-        }
-
-        .last-updated {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            margin: 10px 0 30px;
-            font-weight: 300;
-        }
-
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin: 30px 0;
-        }
-
-        .main-button {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            font-size: 2.2rem;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            background: radial-gradient(circle, var(--primary-color), var(--primary-dark));
-            color: #fff;
-            box-shadow: 0 5px 20px rgba(191, 54, 12, 0.5),
-                0 0 0 4px rgba(255, 107, 53, 0.2);
-            transition: var(--transition);
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1;
-        }
-
-        .main-button:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(191, 54, 12, 0.6),
-                0 0 0 4px rgba(255, 107, 53, 0.3);
-        }
-
-        .main-button:active {
-            transform: translateY(1px) scale(0.98);
-        }
-
-        .reset-button {
-            position: absolute;
-            top: 16px;
-            right: 14px;
-            width: 36px;
-            height: 36px;
-            line-height: 36px;
-            padding: 0px;
-            padding-bottom: 2px;
-            border-radius: 50%;
-            font-size: 1.4rem;
-            background: var(--primary-dark);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 3px 10px rgba(191, 54, 12, 0.4);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9;
-        }
-
-        .reset-button:hover {
-            background: #8c2a06;
-            transform: rotate(90deg);
-        }
-
-        .history-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-            flex: 1;
-        }
-
-        .history-list li {
-            padding: 14px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.95rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: var(--transition);
-        }
-
-        .history-list li:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .history-date {
-            color: var(--text-secondary);
-            font-weight: 300;
-        }
-
-        .history-count {
-            color: var(--primary-color);
-            font-weight: 500;
-        }
-
-        .no-history {
-            text-align: center;
-            color: var(--text-secondary);
-            font-style: italic;
-            margin-top: 40px;
-            padding: 20px;
-            font-size: 0.95rem;
-            justify-content: center !important;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            min-height: 200px;
-            height: 200px;
-            margin-bottom: 20px;
-        }
-
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        .action-button {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text-color);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 20px auto 0;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .action-button:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateY(-2px);
-        }
-
-        .action-button:active {
-            transform: translateY(0);
-        }
-
-        .action-button.warning {
-            background: rgba(191, 54, 12, 0.2);
-            color: var(--primary-light);
-        }
-
-        .action-button.warning:hover {
-            background: rgba(191, 54, 12, 0.3);
-        }
-
-        /* Ripple Effect */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            transform: scale(0);
-            animation: ripple-animation 0.6s linear;
-            background-color: rgba(255, 107, 53, 0.3);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
-        }
-
-        /* Pulse Animation */
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
-            }
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 574px) {
-            .app-container {
-                width: 100%;
-                max-width: 100%;
-                height: 100vh;
-                max-height: none;
-                border: none;
-                border-radius: 0;
-            }
-
-            .tab-bar {
-                border-radius: 0;
-            }
-
-            .header {
-                display: none;
-                padding: 16px;
-            }
-
-            .counter-value {
-                font-size: 4rem;
-            }
-
-            .main-button {
-                width: 75px;
-                height: 75px;
-                font-size: 2rem;
-            }
-        }
-
-        /* Fancy decorative elements */
-        .decorative-circle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.1;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .circle-1 {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, var(--primary-color), transparent 70%);
-            top: -150px;
-            right: -150px;
-        }
-
-        .circle-2 {
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, var(--accent-color), transparent 70%);
-            bottom: -100px;
-            left: -100px;
-        }
-
-        .music-toggle {
-            position: absolute;
-            top: 16px;
-            left: 14px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: var(--accent-color);
-            font-size: 1.1rem;
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: var(--transition);
-            z-index: 10;
-        }
-
-        .music-toggle:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: scale(1.1);
-        }
-
-        .music-toggle.muted {
-            opacity: 0.6;
-            color: var(--text-secondary);
-        }
-
-        /*css for install webview app*/
-        #installContainer {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: none;
-        }
-
-        #installBtn {
-            background: #bf360c;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        #installBtn::before {
-            content: "⬇";
-            font-size: 18px;
-        }
-    </style>
+        rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XLGW17YG7Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-XLGW17YG7Z');
+    </script>
 </head>
 
 <body>
@@ -567,6 +44,38 @@
             <h1>Jaap Tracker</h1>
             <p>Count your spiritual repetitions</p>
         </div>
+        <!-- Hamburger button -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Sidebar menu -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <nav class="sidebar" id="sidebarMenu">
+            <div class="sidebar-header">
+                <span>Menu</span>
+                <button class="close-sidebar" id="closeSidebarBtn" aria-label="Close menu">&times;</button>
+            </div>
+            <ul>
+                <li>
+                    <a href="javascript:void(0);" data-action="home">
+                        <span class="menu-icon">🏠</span>Home
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" data-action="history">
+                        <span class="menu-icon">📜</span>History
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" data-action="settings">
+                        <span class="menu-icon">⚙️</span>Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
         <div class="tab-bar">
             <div class="tab active" id="clickTab">
@@ -580,6 +89,7 @@
         <div class="tab-content tab-jaap" id="clickContent">
             <button id="musicToggle" class="music-toggle" title="Toggle background music">🔊</button>
             <div class="counter-container">
+                <div class="mantra-animated" id="mantraAnimated"></div>
                 <div class="counter-label">Today's Jaap Count</div>
                 <div class="counter-value" id="counter">0</div>
                 <div class="last-updated" id="lastUpdated">Last updated: Just now</div>
@@ -607,13 +117,41 @@
 
     <script src="assets/js/jquery-3.7.1.min.js"></script>
     <script src="assets/js/chart.js"></script>
+    <script src="assets/js/script.js"></script>
     <script>
-        // Add this near your other DOM element declarations
         const musicToggle = document.getElementById("musicToggle");
         const bgAudio = document.getElementById("bgAudio");
 
-        // Initialize music state from localStorage or default to playing
-        let isMusicPlaying = localStorage.getItem('musicPlaying') !== 'false';
+        // Check for 1 year expiry
+        function isSettingValid(tsKey) {
+            const ts = parseInt(localStorage.getItem(tsKey), 10);
+            if (!ts) return true;
+            const oneYear = 365 * 24 * 60 * 60 * 1000;
+            return (Date.now() - ts) < oneYear;
+        }
+
+        // Get music state with expiry
+        function getMusicState() {
+            if (!isSettingValid('musicPlaying_ts')) {
+                localStorage.removeItem('musicPlaying');
+                localStorage.removeItem('musicPlaying_ts');
+                return true;
+            }
+            return localStorage.getItem('musicPlaying') !== 'false';
+        }
+
+        // Get vibrate state with expiry
+        function getVibrateState() {
+            if (!isSettingValid('vibrate_ts')) {
+                localStorage.removeItem('vibrate');
+                localStorage.removeItem('vibrate_ts');
+                return true;
+            }
+            return localStorage.getItem('vibrate') !== 'off';
+        }
+
+        let isMusicPlaying = getMusicState();
+        let isVibrateOn = getVibrateState();
 
         // Set initial state
         updateMusicState();
@@ -622,11 +160,16 @@
         musicToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             isMusicPlaying = !isMusicPlaying;
+            localStorage.setItem('musicPlaying', isMusicPlaying ? 'true' : 'false');
+            localStorage.setItem('musicPlaying_ts', Date.now());
             updateMusicState();
-            localStorage.setItem('musicPlaying', isMusicPlaying);
+            // Also update popup if open
+            const bgSoundSelect = document.getElementById('bgSoundSelect');
+            if (bgSoundSelect) bgSoundSelect.value = isMusicPlaying ? 'on' : 'off';
         });
 
         function updateMusicState() {
+            isMusicPlaying = getMusicState();
             if (isMusicPlaying) {
                 bgAudio.play().catch(e => console.log("Audio play prevented:", e));
                 musicToggle.textContent = "🔊";
@@ -661,6 +204,22 @@
                 bgAudio.pause();
             }
         });
+
+        function updateMantraDisplay() {
+            const mantraBox = document.getElementById('mantraAnimated');
+            const showMantra = localStorage.getItem('showMantra') !== 'off';
+            if (mantraBox) {
+                if (showMantra) {
+                    mantraBox.style.display = '';
+                    const mantra = localStorage.getItem('jaapMantra') || 'Om';
+                    mantraBox.textContent = "🕉️" + mantra + "🕉️";
+                } else {
+                    mantraBox.style.display = 'none';
+                }
+            }
+        }
+        // Call on load
+        updateMantraDisplay();
     </script>
 
     <script>
@@ -677,17 +236,57 @@
 
         let clickChart;
 
-        // Enhanced cookie functions
-        function setCookie(name, value, days) {
-            const expires = new Date(Date.now() + days * 864e5).toUTCString();
-            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax; Secure`;
+        // --- LocalStorage-based daily count storage with 1 year validity ---
+
+        function setDayCount(key, count) {
+            const data = { count, ts: Date.now() };
+            localStorage.setItem(key, JSON.stringify(data));
         }
 
-        function getCookie(name) {
-            return document.cookie.split('; ').reduce((r, v) => {
-                const parts = v.split('=');
-                return parts[0] === name ? decodeURIComponent(parts[1]) : r;
-            }, null);
+        function getDayCount(key) {
+            const raw = localStorage.getItem(key);
+            if (!raw) return 0;
+            try {
+                const data = JSON.parse(raw);
+                return typeof data.count === "number" ? data.count : 0;
+            } catch {
+                return 0;
+            }
+        }
+
+        // Remove entries older than 1 year
+        function cleanOldHistory() {
+            const now = Date.now();
+            const oneYear = 365 * 24 * 60 * 60 * 1000;
+            Object.keys(localStorage).forEach(key => {
+                if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(key));
+                        if (!data.ts || now - data.ts > oneYear) {
+                            localStorage.removeItem(key);
+                        }
+                    } catch {
+                        localStorage.removeItem(key);
+                    }
+                }
+            });
+        }
+
+        // Get all valid day counts (last 1 year)
+        function getClickHistory() {
+            cleanOldHistory();
+            return Object.keys(localStorage)
+                .filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k))
+                .map(k => {
+                    try {
+                        const data = JSON.parse(localStorage.getItem(k));
+                        return { date: k, count: data.count || 0, ts: data.ts || 0 };
+                    } catch {
+                        return null;
+                    }
+                })
+                .filter(Boolean)
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
         }
 
         function getTodayKey() {
@@ -702,12 +301,6 @@
             yesterday.setDate(yesterday.getDate() - 1);
 
             if (date.toDateString() === today.toDateString()) {
-                // Special format for today - show full date with time
-                const hours = today.getHours();
-                const minutes = today.getMinutes();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                const formattedHours = hours % 12 || 12;
-                const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
                 return `Today`;
             }
 
@@ -723,20 +316,8 @@
             return `${day} ${month} ${year}`;
         }
 
-        function getClickHistory() {
-            return document.cookie
-                .split('; ')
-                .map(c => {
-                    const [k, v] = c.split('=');
-                    return /^\d{4}-\d{2}-\d{2}$/.test(k) ? { date: k, count: parseInt(v) } : null;
-                })
-                .filter(Boolean)
-                .sort((a, b) => new Date(b.date) - new Date(a.date));
-            // uper Sort by date descending (newest first)
-        }
-
         const todayKey = getTodayKey();
-        let todayCount = parseInt(getCookie(todayKey)) || 0;
+        let todayCount = getDayCount(todayKey) || 0;
         counterEl.textContent = todayCount;
 
         // Initialize last updated text
@@ -744,12 +325,12 @@
 
         clickContent.addEventListener("click", (event) => {
             createRipple(event, clickBtn);
-            if (navigator.vibrate) navigator.vibrate(50);
+            if (getVibrateState() && navigator.vibrate) navigator.vibrate(50);
             // playClickSound();
 
             todayCount++;
             counterEl.textContent = todayCount;
-            setCookie(todayKey, todayCount, 30);
+            setDayCount(todayKey, todayCount);
 
             // Update last updated time
             updateLastUpdatedText();
@@ -762,7 +343,7 @@
             if (confirm("Are you sure you want to reset today's count?")) {
                 todayCount = 0;
                 counterEl.textContent = '0';
-                setCookie(todayKey, todayCount, 30);
+                setDayCount(todayKey, todayCount);
                 updateLastUpdatedText();
             }
         });
@@ -788,9 +369,9 @@
                 history.forEach(entry => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                        <span class="history-date">${formatDate(entry.date)}</span>
-                        <span class="history-count">${entry.count} ${entry.count === 1 ? 'Count' : 'Counts'}</span>
-                    `;
+                    <span class="history-date">${formatDate(entry.date)}</span>
+                    <span class="history-count">${entry.count} ${entry.count === 1 ? 'Count' : 'Counts'}</span>
+                `;
                     historyList.appendChild(li);
                 });
             }
@@ -878,32 +459,16 @@
             }
         }
 
-        clickTab.addEventListener("click", () => {
-            clickTab.classList.add("active");
-            historyTab.classList.remove("active");
-            clickContent.classList.remove("hidden");
-            historyContent.classList.add("hidden");
-        });
-
-        historyTab.addEventListener("click", () => {
-            historyTab.classList.add("active");
-            clickTab.classList.remove("active");
-            clickContent.classList.add("hidden");
-            historyContent.classList.remove("hidden");
-            updateHistory();
-        });
-
         const clearHistoryBtn = document.getElementById("clearHistoryBtn");
         clearHistoryBtn.addEventListener("click", () => {
             if (confirm("Are you sure you want to clear ALL history? This cannot be undone.")) {
-                document.cookie.split("; ").forEach(cookie => {
-                    const [key] = cookie.split("=");
+                Object.keys(localStorage).forEach(key => {
                     if (/^\d{4}-\d{2}-\d{2}$/.test(key)) {
-                        document.cookie = `${key}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
+                        localStorage.removeItem(key);
                     }
                 });
                 todayCount = 0;
-                setCookie(todayKey, todayCount, 30);
+                setDayCount(todayKey, todayCount);
                 counterEl.textContent = '0';
                 if (clickChart) {
                     clickChart.data.labels = [];
