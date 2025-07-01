@@ -69,7 +69,7 @@ body::before {
 }
 
 .header {
-    background: #4b001b;
+    background: #3d1423;
     padding: 20px;
     text-align: center;
     border-bottom: 1px solid var(--card-border);
